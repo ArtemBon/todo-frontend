@@ -15,6 +15,10 @@ li.task:hover .deleteTaskBtn {
 	opacity: 1;
 }
 
+li.task small {
+  color: #656565;
+}
+
 input.taskCheckbox {
 	position: relative;
 	float: left;

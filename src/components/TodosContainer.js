@@ -48,7 +48,7 @@ class TodosContainer extends Component {
     .then(response => {
       const todoIndex = this.state.todos.findIndex(x => x.id === response.data.id)
       const todos = this.state.todos
-      todos[todoIndex].done = response.data.done
+      todos[todoIndex] = response.data
       this.setState(state => ({
         todos: todos
       }))
@@ -67,6 +67,20 @@ class TodosContainer extends Component {
       }))
     })
     .catch(error => console.log(error))
+  }
+
+  formatDate(created_at) {
+    const date = new Date(Date.parse(created_at));
+
+    let hh = date.getHours();
+    let mm = date.getMinutes()+1; 
+    let ss = date.getSeconds();
+
+    hh = hh < 10 ? `0${hh}` : hh;
+    mm = mm < 10 ? `0${mm}` : mm;
+    ss = ss < 10 ? `0${ss}` : ss;
+
+    return `${hh}:${mm}:${ss}`;
   }
 
   render() {
@@ -92,6 +106,10 @@ class TodosContainer extends Component {
                     onClick={(e) => this.deleteTodo(todo.id)}>
                     x
                   </span>
+                  <br/>
+                  { todo.done
+                    ? <small>done at: {this.formatDate(todo.updated_at)}</small>
+                    : <small>created at: {this.formatDate(todo.created_at)}</small> }
                 </li>
               );
             })} 	    
