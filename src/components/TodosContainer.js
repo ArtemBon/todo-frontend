@@ -43,6 +43,19 @@ class TodosContainer extends Component {
     }    
   }
 
+  updateTodo = (e, id) => {
+    axios.put(`http://localhost:3001/api/v1/todos/${id}`, { todo: {done: e.target.checked} })
+    .then(response => {
+      const todoIndex = this.state.todos.findIndex(x => x.id === response.data.id)
+      const todos = this.state.todos
+      todos[todoIndex].done = response.data.done
+      this.setState(state => ({
+        todos: todos
+      }))
+    })
+    .catch(error => console.log(error))      
+  }
+
   render() {
     return (
       <div>
@@ -58,7 +71,9 @@ class TodosContainer extends Component {
             {this.state.todos.map(todo => {
               return(
                 <li className="task" todo={todo} key={todo.id}>
-                  <input className="taskCheckbox" type="checkbox" />              
+                  <input className="taskCheckbox" type="checkbox"
+                    checked={todo.done}
+                    onChange={(e) => this.updateTodo(e, todo.id)} />
                   <label className="taskLabel">{todo.body}</label>
                   <span className="deleteTaskBtn">x</span>
                 </li>
