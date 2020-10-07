@@ -5,8 +5,12 @@ class TodosContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todos: []
+      todos: [],
+      inputValue: ''
     };
+
+    this.createTodo = this.createTodo.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   getTodos() {
@@ -21,12 +25,32 @@ class TodosContainer extends Component {
     this.getTodos();
   }
 
+  handleChange(e) {
+    this.setState({ inputValue: e.target.value });
+  }
+
+  createTodo(e) {
+    if (e.key === 'Enter') {
+      axios.post('http://localhost:3001/api/v1/todos', {todo: {body: e.target.value}})
+      .then(response => {
+        const todos = [ response.data, ...this.state.todos ]
+        this.setState({
+          todos,
+          inputValue: ''
+        })
+      })
+      .catch(error => console.log(error))      
+    }    
+  }
+
   render() {
     return (
       <div>
         <div className="inputContainer">
           <input className="taskInput" type="text" 
             placeholder="Add a task" maxLength="1000"
+            value={this.state.inputValue}
+            onChange={this.handleChange}
             onKeyPress={this.createTodo} />
         </div>  	    
         <div className="listWrapper">
